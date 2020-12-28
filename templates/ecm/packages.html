@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block body %}
+<!-- Editable table -->
+<form name="myform" id="myform">
+    <div class="table-content">
+        <input type="text" id="Measured" contenteditable="true" required value='' placeholder="Enter the package name">
+        <button type="button" id="add_package">Add Package</button>
+        <button type="button" id="myButton">Manage Control Unit</button>
+
+        <table class="table table-borded table-responsive table-striped" id="blacklistgrid">
+            <thead>
+                <tr>
+                    <th class="table-dark"> Package Name</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                <tr>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</form>
+<!--<table class="table table-borded table-responsive table-striped editable" id="myTable">-->
+
+
+<!--</table>-->
+{% endblock body %}
+
+{% block javascript %}
+         $(document).ready(function(){
+            $('#add_package').click(function(){
+                var myform = $('#myTable');
+                myform.find('tr').each(function(){
+                    var trow = $(this);
+                    if(trow.index() === 0 ){
+                        var input_value = $("#Measured").val()
+                        // add if clause to check if package name is empty or not
+                        var data = `<tr class='editable'><td ><a href='www.google.com'>${input_value}</a></td></tr>`
+                        $('#myTable').append(data);
+                        document.getElementById("Measured").value = "";
+
+                        $.ajax({
+                            type: "POST",
+                            url: '/ecm/9/add_package/',
+                            data: {'package_name': input_value},
+                            dataType: 'json',
+                            success: function (data) {
+                              if (data.is_success) {
+                                alert("New package has been added successfully.");
+                              }
+                            }
+                        });
+
+                    }
+                 });
+
+            });
+
+
+
+            $('#myButton').click(function(){
+                window.location.href='www.google.com';
+            });
+
+        });
+{% endblock javascript %}
+
+
